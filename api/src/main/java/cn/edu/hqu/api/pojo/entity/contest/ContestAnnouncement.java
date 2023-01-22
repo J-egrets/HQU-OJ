@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 比赛时的通知
  * @author egret
  */
 @Data

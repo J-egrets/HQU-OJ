@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 训练记录
  * @author egret
  */
 @Data

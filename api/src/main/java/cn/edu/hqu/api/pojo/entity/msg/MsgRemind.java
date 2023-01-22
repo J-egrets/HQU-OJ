@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 /**
+ * 消息提醒
  * @author egret
  */
 @Data

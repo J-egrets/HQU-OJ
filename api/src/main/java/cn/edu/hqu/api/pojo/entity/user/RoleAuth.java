@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 权限角色关联
  * @author egret
  */
 @Data

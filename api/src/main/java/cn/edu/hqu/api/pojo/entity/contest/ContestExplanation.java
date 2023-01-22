@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 赛后题解表**(未使用)**
  * @author egret
  */
 @Data

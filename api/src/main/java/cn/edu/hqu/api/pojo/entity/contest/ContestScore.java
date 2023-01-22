@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * rating赛制中获得的分数更改记录表（未使用）
  * @author egret
  */
 @Data

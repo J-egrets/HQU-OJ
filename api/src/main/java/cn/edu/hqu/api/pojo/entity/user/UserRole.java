@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 用户角色
  * @author egret
  */
 @Data
