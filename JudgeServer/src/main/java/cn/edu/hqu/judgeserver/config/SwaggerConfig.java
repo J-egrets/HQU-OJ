@@ -1,4 +1,4 @@
-package cn.edu.hqu.databackup.config;
+package cn.edu.hqu.judgeserver.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,8 +47,8 @@ public class SwaggerConfig {
                 "https://jegret.cn",
                 "1448952248@qq.com");
         return new ApiInfo(
-                "HOJ-Backend的API文档",
-                "HCODE ONLINE JUDGE(HOJ)的后端接口文档",
+                "HOJ-JudgeServer的API文档",
+                "HCODE ONLINE JUDGE(HOJ)的判题端接口文档",
                 "v4.4",
                 "https://jegret.cn",
                 contact,
