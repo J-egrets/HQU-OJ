@@ -59,7 +59,7 @@ public class JudgeStrategy {
             LanguageConfig languageConfig = languageConfigLoader.getLanguageConfigByName(judge.getLanguage());
             // 有的语言可能不支持编译, 目前有js、php不支持编译
             if (languageConfig.getCompileCommand() != null) {
-                userFileId = java.lang.Compiler.compile(languageConfig,
+                userFileId = Compiler.compile(languageConfig,
                         judge.getCode(),
                         judge.getLanguage(),
                         JudgeUtils.getProblemExtraFileMap(problem, "user"));
@@ -155,7 +155,7 @@ public class JudgeStrategy {
             LanguageConfig languageConfig = languageConfigLoader.getLanguageConfigByName(testJudgeReq.getLanguage());
             // 有的语言可能不支持编译,目前有js、php不支持编译，需要提供源代码
             if (languageConfig.getCompileCommand() != null) {
-                userFileId = java.lang.Compiler.compile(languageConfig,
+                userFileId = Compiler.compile(languageConfig,
                         testJudgeReq.getCode(),
                         testJudgeReq.getLanguage(),
                         testJudgeReq.getExtraFile());
@@ -226,7 +226,7 @@ public class JudgeStrategy {
 
                 // 如果不存在该已经编译好的程序，则需要再次进行编译
                 if (!FileUtil.exist(programFilePath) || !FileUtil.exist(programVersionPath)) {
-                    boolean isCompileSpjOk = java.lang.Compiler.compileSpj(problem.getSpjCode(), problem.getId(), problem.getSpjLanguage(),
+                    boolean isCompileSpjOk = Compiler.compileSpj(problem.getSpjCode(), problem.getId(), problem.getSpjLanguage(),
                             JudgeUtils.getProblemExtraFileMap(problem, "judge"));
 
                     FileWriter fileWriter = new FileWriter(programVersionPath);
@@ -239,7 +239,7 @@ public class JudgeStrategy {
 
                 // 版本变动也需要重新编译
                 if (!currentVersion.equals(recordSpjVersion)) {
-                    boolean isCompileSpjOk = java.lang.Compiler.compileSpj(problem.getSpjCode(), problem.getId(), problem.getSpjLanguage(),
+                    boolean isCompileSpjOk = Compiler.compileSpj(problem.getSpjCode(), problem.getId(), problem.getSpjLanguage(),
                             JudgeUtils.getProblemExtraFileMap(problem, "judge"));
                     FileWriter fileWriter = new FileWriter(programVersionPath);
                     fileWriter.write(currentVersion);
@@ -257,7 +257,7 @@ public class JudgeStrategy {
 
                 // 如果不存在该已经编译好的程序，则需要再次进行编译 版本变动也需要重新编译
                 if (!FileUtil.exist(programFilePath) || !FileUtil.exist(programVersionPath)) {
-                    boolean isCompileInteractive = java.lang.Compiler.compileInteractive(problem.getSpjCode(), problem.getId(), problem.getSpjLanguage(),
+                    boolean isCompileInteractive = Compiler.compileInteractive(problem.getSpjCode(), problem.getId(), problem.getSpjLanguage(),
                             JudgeUtils.getProblemExtraFileMap(problem, "judge"));
                     FileWriter fileWriter = new FileWriter(programVersionPath);
                     fileWriter.write(currentVersion);
@@ -269,7 +269,7 @@ public class JudgeStrategy {
 
                 // 版本变动也需要重新编译
                 if (!currentVersion.equals(recordInteractiveVersion)) {
-                    boolean isCompileInteractive = java.lang.Compiler.compileSpj(problem.getSpjCode(), problem.getId(), problem.getSpjLanguage(),
+                    boolean isCompileInteractive = Compiler.compileSpj(problem.getSpjCode(), problem.getId(), problem.getSpjLanguage(),
                             JudgeUtils.getProblemExtraFileMap(problem, "judge"));
 
                     FileWriter fileWriter = new FileWriter(programVersionPath);

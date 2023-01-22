@@ -86,11 +86,11 @@ public class JudgeContext {
     }
 
     public Boolean compileSpj(String code, Long pid, String spjLanguage, HashMap<String, String> extraFiles) throws SystemError {
-        return java.lang.Compiler.compileSpj(code, pid, spjLanguage, extraFiles);
+        return Compiler.compileSpj(code, pid, spjLanguage, extraFiles);
     }
 
     public Boolean compileInteractive(String code, Long pid, String interactiveLanguage, HashMap<String, String> extraFiles) throws SystemError {
-        return java.lang.Compiler.compileInteractive(code, pid, interactiveLanguage, extraFiles);
+        return Compiler.compileInteractive(code, pid, interactiveLanguage, extraFiles);
     }
 
 
