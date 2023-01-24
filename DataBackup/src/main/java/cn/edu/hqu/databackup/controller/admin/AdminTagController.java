@@ -16,11 +16,9 @@ import java.util.List;
  * @author egret
  * @Description: 处理tag的增删改
  */
-
 @RestController
 @RequestMapping("/api/admin/tag")
 public class AdminTagController {
-
 
     @Resource
     private AdminTagService adminTagService;
@@ -45,7 +43,6 @@ public class AdminTagController {
     public CommonResult<Void> deleteTag(@RequestParam("tid") Long tid) {
         return adminTagService.deleteTag(tid);
     }
-
 
     @GetMapping("/classification")
     @RequiresAuthentication

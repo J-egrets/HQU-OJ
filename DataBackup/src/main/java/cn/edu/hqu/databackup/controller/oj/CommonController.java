@@ -29,13 +29,11 @@ public class CommonController {
     @Autowired
     private CommonService commonService;
 
-
     @GetMapping("/captcha")
     @AnonApi
     public CommonResult<CaptchaVO> getCaptcha() {
         return commonService.getCaptcha();
     }
-
 
     @GetMapping("/get-training-category")
     @AnonApi
@@ -60,7 +58,6 @@ public class CommonController {
     public CommonResult<Collection<Tag>> getProblemTags(Long pid) {
         return commonService.getProblemTags(pid);
     }
-
 
     @GetMapping("/languages")
     @AnonApi

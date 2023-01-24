@@ -42,7 +42,6 @@ public class AdminJudgeController {
         return rejudgeService.rejudgeContestProblem(cid, pid);
     }
 
-
     @GetMapping("/manual-judge")
     @RequiresAuthentication
     @RequiresRoles("root")  // 只有超级管理员能操作

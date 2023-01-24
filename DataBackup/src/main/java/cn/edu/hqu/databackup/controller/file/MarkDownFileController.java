@@ -32,14 +32,12 @@ public class MarkDownFileController {
         return markDownFileService.uploadMDImg(image, gid);
     }
 
-
     @RequestMapping(value = "/delete-md-img", method = RequestMethod.GET)
     @RequiresAuthentication
     @ResponseBody
     public CommonResult<Void> deleteMDImg(@RequestParam("fileId") Long fileId) {
         return markDownFileService.deleteMDImg(fileId);
     }
-
 
     @RequestMapping(value = "/upload-md-file", method = RequestMethod.POST)
     @RequiresAuthentication

@@ -23,7 +23,6 @@ public class AdminUserController {
     @Autowired
     private AdminUserService adminUserService;
 
-
     @GetMapping("/get-user-list")
     @RequiresAuthentication
     @RequiresPermissions("user_admin")

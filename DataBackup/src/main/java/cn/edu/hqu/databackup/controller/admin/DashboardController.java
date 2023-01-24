@@ -25,7 +25,6 @@ public class DashboardController {
     @Autowired
     private DashboardService dashboardService;
 
-
     @PostMapping("/get-sessions")
     @RequiresAuthentication
     @RequiresRoles(value = {"root","admin","problem_admin"},logical = Logical.OR)

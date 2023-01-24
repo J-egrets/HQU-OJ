@@ -29,7 +29,6 @@ public class DiscussionController {
     @Autowired
     private DiscussionService discussionService;
 
-
     @GetMapping("/get-discussion-list")
     @AnonApi
     @HOJAccess({HOJAccessEnum.PUBLIC_DISCUSSION})
@@ -94,7 +93,6 @@ public class DiscussionController {
     public CommonResult<List<Category>> upsertDiscussionCategory(@RequestBody List<Category> categoryList) {
         return discussionService.upsertDiscussionCategory(categoryList);
     }
-
 
     @PostMapping("/discussion-report")
     @RequiresAuthentication

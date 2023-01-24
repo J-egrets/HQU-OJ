@@ -19,13 +19,20 @@ import java.util.ArrayList;
  */
 @Configuration
 @EnableSwagger2 // 开启swagger2
-@Profile({"dev", "test"}) // 只允许开发环境访问
+@Profile({"dev", "test","prod"}) // 只允许开发环境访问
 public class SwaggerConfig {
-    @Bean //配置swagger的docket的bean势力
+
+    /**
+     * 配置swagger的docket的bean实例
+     * @param environment
+     * @return
+     */
+    @Bean
     public Docket docket(Environment environment) {
-        //设置要显示的swagger环境
-        Profiles profiles = Profiles.of("dev", "test"); //线下环境
-        //通过环境判断是否在自己所设定的环境当中
+        // 设置要显示的swagger环境
+        // 线下环境
+        Profiles profiles = Profiles.of("dev", "test","prod");
+        // 通过环境判断是否在自己所设定的环境当中
         boolean flag = environment.acceptsProfiles(profiles);
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
@@ -36,7 +43,7 @@ public class SwaggerConfig {
                 //any()全部
                 //none 都不扫描
                 //path 过滤什么路径
-                .apis(RequestHandlerSelectors.basePackage("top.hcode"))
+                .apis(RequestHandlerSelectors.basePackage("cn.edu.hqu.databackup"))
                 .build();
     }
 

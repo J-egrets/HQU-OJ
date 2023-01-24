@@ -14,7 +14,6 @@ public class CommonResult<T> {
 
     private final String msg;    // 自定义信息
 
-
     /**
      * 成功的结果
      *

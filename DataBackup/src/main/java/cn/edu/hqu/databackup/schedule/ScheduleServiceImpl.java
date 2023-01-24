@@ -113,7 +113,6 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @Params * @param null
      * @Description 每天3点定时查询数据库字段并删除未引用的头像
      * @Return
-     * @Since 2021/1/13
      */
     @Scheduled(cron = "0 0 3 * * *")
     @Override
@@ -145,7 +144,6 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @Params * @param null
      * @Description 每天3点定时删除指定文件夹的上传测试数据
      * @Return
-     * @Since 2021/2/7
      */
     @Scheduled(cron = "0 0 3 * * *")
 //    @Scheduled(cron = "0/5 * * * * *")
@@ -162,7 +160,6 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @Params * @param null
      * @Description 每天4点定时删除本地的比赛打印数据
      * @Return
-     * @Since 2021/9/19
      */
     @Scheduled(cron = "0 0 4 * * *")
     @Override
@@ -305,7 +302,6 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @Params * @param null
      * @Description 每天3点定时删除用户半年的session表记录
      * @Return
-     * @Since 2021/9/6
      */
     @Scheduled(cron = "0 0 3 * * *")
 //    @Scheduled(cron = "0/5 * * * * *")
@@ -338,7 +334,6 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @MethodName syncNoticeToUser
      * @Description 每一小时拉取系统通知表admin_sys_notice到表user_sys_notice(只推送给半年内有登录过的用户)
      * @Return
-     * @Since 2021/10/3
      */
     @Override
     @Scheduled(cron = "0 0 0/1 * * *")

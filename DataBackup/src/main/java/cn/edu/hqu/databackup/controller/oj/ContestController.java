@@ -27,13 +27,11 @@ public class ContestController {
     @Autowired
     private ContestService contestService;
 
-
     /**
      * @MethodName getContestList
      * @Params * @param null
      * @Description 获取比赛列表分页数据
      * @Return CommonResult
-     * @Since 2020/10/27
      */
     @GetMapping("/get-contest-list")
     @AnonApi
@@ -49,7 +47,6 @@ public class ContestController {
      * @MethodName getContestInfo
      * @Description 获得指定比赛的详细信息
      * @Return
-     * @Since 2020/10/28
      */
     @GetMapping("/get-contest-info")
     @RequiresAuthentication
@@ -62,7 +59,6 @@ public class ContestController {
      * @MethodName toRegisterContest
      * @Description 注册比赛
      * @Return
-     * @Since 2020/10/28
      */
     @PostMapping("/register-contest")
     @RequiresAuthentication
@@ -74,7 +70,6 @@ public class ContestController {
      * @MethodName getContestAccess
      * @Description 获得指定私有比赛的访问权限或保护比赛的提交权限
      * @Return
-     * @Since 2020/10/28
      */
     @RequiresAuthentication
     @GetMapping("/get-contest-access")
@@ -83,12 +78,10 @@ public class ContestController {
         return contestService.getContestAccess(cid);
     }
 
-
     /**
      * @MethodName getContestProblem
      * @Description 获得指定比赛的题目列表
      * @Return
-     * @Since 2020/10/28
      */
     @GetMapping("/get-contest-problem")
     @RequiresAuthentication
@@ -104,7 +97,6 @@ public class ContestController {
 
         return contestService.getContestProblemDetails(cid, displayId);
     }
-
 
     @GetMapping("/contest-submissions")
     @RequiresAuthentication
@@ -129,12 +121,10 @@ public class ContestController {
                 completeProblemID);
     }
 
-
     /**
      * @MethodName getContestRank
      * @Description 获得比赛做题记录以用来排名
      * @Return
-     * @Since 2020/10/28
      */
     @PostMapping("/get-contest-rank")
     @RequiresAuthentication
@@ -143,12 +133,10 @@ public class ContestController {
         return contestService.getContestRank(contestRankDto);
     }
 
-
     /**
      * @MethodName getContestAnnouncement
      * @Description 获得比赛的通知列表
      * @Return CommonResult
-     * @Since 2020/10/28
      */
     @GetMapping("/get-contest-announcement")
     @RequiresAuthentication
@@ -159,13 +147,11 @@ public class ContestController {
         return contestService.getContestAnnouncement(cid, limit, currentPage);
     }
 
-
     /**
      * @param userReadContestAnnouncementDto
      * @MethodName getContestUserNotReadAnnouncement
      * @Description 根据前端传过来的比赛id以及已阅读的公告提示id列表，排除后获取未阅读的公告
      * @Return
-     * @Since 2021/7/17
      */
     @PostMapping("/get-contest-not-read-announcement")
     @RequiresAuthentication
@@ -173,13 +159,11 @@ public class ContestController {
         return contestService.getContestUserNotReadAnnouncement(userReadContestAnnouncementDto);
     }
 
-
     /**
      * @param contestPrintDto
      * @MethodName submitPrintText
      * @Description 提交比赛文本打印内容
      * @Return
-     * @Since 2021/9/20
      */
     @PostMapping("/submit-print-text")
     @RequiresAuthentication

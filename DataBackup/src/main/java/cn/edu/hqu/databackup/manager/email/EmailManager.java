@@ -42,7 +42,6 @@ public class EmailManager {
      * @Params * @param
      * @Description 获取邮件系统配置
      * @Return
-     * @Since 2021/5/21
      */
     private JavaMailSenderImpl getMailSender() {
         WebConfig webConfig = nacosSwitchConfig.getWebConfig();
@@ -66,7 +65,6 @@ public class EmailManager {
      * @Params * @param null
      * @Description 验证当前邮箱系统是否已配置。
      * @Return
-     * @Since 2021/6/12
      */
     public boolean isOk() {
         WebConfig webConfig = nacosSwitchConfig.getWebConfig();
@@ -83,7 +81,6 @@ public class EmailManager {
      * @MethodName sendRegisterCode
      * @Description 为正在注册的用户发送一份注册验证码。
      * @Return
-     * @Since 2021/1/14
      */
     @Async
     public void sendRegisterCode(String email, String code) {
@@ -127,7 +124,6 @@ public class EmailManager {
      * @MethodName sendResetPassword
      * @Description 给指定的邮箱的用户发送重置密码链接的邮件。
      * @Return
-     * @Since 2021/1/14
      */
     @Async
     public void sendResetPassword(String username, String code, String email) {
@@ -178,7 +174,6 @@ public class EmailManager {
      * @MethodName testEmail
      * @Description 超级管理员后台修改邮件系统配置后发送的测试邮箱可用性的测试邮件。
      * @Return
-     * @Since 2021/1/14
      */
     @Async
     public void testEmail(String email) {
@@ -217,7 +212,6 @@ public class EmailManager {
      * @MethodName sendChangeEmailCode
      * @Description 为正在修改邮箱的用户的新邮箱发送验证码
      * @Return
-     * @Since 2021/1/14
      */
     public void sendChangeEmailCode(String email, String username, String code) {
         DateTime expireTime = DateUtil.offsetMinute(new Date(), 10);

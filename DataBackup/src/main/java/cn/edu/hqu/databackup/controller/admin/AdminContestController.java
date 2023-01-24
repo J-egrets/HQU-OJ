@@ -105,7 +105,6 @@ public class AdminContestController {
     /**
      * 以下为比赛的题目的增删改查操作接口
      */
-
     @GetMapping("/get-problem-list")
     @RequiresAuthentication
     @RequiresRoles(value = {"root", "admin", "problem_admin"}, logical = Logical.OR)
@@ -194,7 +193,6 @@ public class AdminContestController {
     /**
      * 以下处理比赛公告的操作请求
      */
-
     @GetMapping("/announcement")
     @RequiresAuthentication
     @RequiresRoles(value = {"root", "admin", "problem_admin"}, logical = Logical.OR)

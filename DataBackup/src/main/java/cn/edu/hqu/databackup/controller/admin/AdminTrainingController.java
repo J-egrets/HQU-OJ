@@ -30,7 +30,6 @@ public class AdminTrainingController {
     @Resource
     private AdminTrainingProblemService adminTrainingProblemService;
 
-
     @GetMapping("/get-training-list")
     @RequiresAuthentication
     @RequiresRoles(value = {"root", "admin", "problem_admin"}, logical = Logical.OR)
@@ -68,7 +67,6 @@ public class AdminTrainingController {
         return adminTrainingService.updateTraining(trainingDto);
     }
 
-
     @PutMapping("/change-training-status")
     @RequiresAuthentication
     @RequiresRoles(value = {"root", "admin", "problem_admin"}, logical = Logical.OR)
@@ -88,7 +86,6 @@ public class AdminTrainingController {
                                                                 @RequestParam(value = "tid", required = true) Long tid) {
         return adminTrainingProblemService.getProblemList(limit, currentPage, keyword, queryExisted, tid);
     }
-
 
     @PutMapping("/problem")
     @RequiresAuthentication

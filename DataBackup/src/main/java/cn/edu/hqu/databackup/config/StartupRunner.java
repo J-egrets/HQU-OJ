@@ -327,10 +327,8 @@ public class StartupRunner implements CommandLineRunner {
      * @MethodName addRemoteJudgeAccountToRedis
      * @Description 将传入的对应oj账号写入到mysql
      * @Return
-     * @Since 2021/5/18
      */
     private void addRemoteJudgeAccountToMySQL(String oj, List<String> usernameList, List<String> passwordList) {
-
 
         if (CollectionUtils.isEmpty(usernameList) || CollectionUtils.isEmpty(passwordList) || usernameList.size() != passwordList.size()) {
             log.error("[Init System Config] [{}]: There is no account or password configured for remote judge, " +
@@ -340,7 +338,6 @@ public class StartupRunner implements CommandLineRunner {
 
         List<RemoteJudgeAccount> remoteAccountList = new LinkedList<>();
         for (int i = 0; i < usernameList.size(); i++) {
-
             remoteAccountList.add(new RemoteJudgeAccount()
                     .setUsername(usernameList.get(i))
                     .setPassword(passwordList.get(i))
@@ -362,7 +359,7 @@ public class StartupRunner implements CommandLineRunner {
     @Deprecated
     private void upsertHOJLanguage(String... languageList) {
         /**
-         * 2022.02.25 新增js、pypy、php语言
+         * 新增js、pypy、php语言
          */
         for (String language : languageList) {
             QueryWrapper<Language> languageQueryWrapper = new QueryWrapper<>();
@@ -382,9 +379,6 @@ public class StartupRunner implements CommandLineRunner {
     @Deprecated
     private void checkAllLanguageUpdate() {
 
-        /**
-         * 2022.02.25 更新原有的python3.6.9为python3.7.5
-         */
         UpdateWrapper<Language> languageUpdateWrapper = new UpdateWrapper<>();
         languageUpdateWrapper.eq("oj", "ME")
                 .eq("name", "Python3")
@@ -392,7 +386,7 @@ public class StartupRunner implements CommandLineRunner {
         languageEntityService.update(languageUpdateWrapper);
 
         /**
-         * 2022.02.25 删除cf的Microsoft Visual C++ 2010
+         * 删除cf的Microsoft Visual C++ 2010
          */
         UpdateWrapper<Language> deleteWrapper = new UpdateWrapper<>();
         deleteWrapper.eq("name", "Microsoft Visual C++ 2010")
@@ -400,7 +394,7 @@ public class StartupRunner implements CommandLineRunner {
         languageEntityService.remove(deleteWrapper);
 
         /**
-         * 2022.09.20 增加hdu的Java和C#支持
+         * 增加hdu的Java和C#支持
          */
         List<Language> newHduLanguageList = new ArrayList<>();
         QueryWrapper<Language> languageQueryWrapper = new QueryWrapper<>();

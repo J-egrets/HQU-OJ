@@ -22,7 +22,6 @@ public class ContestFileController {
     @Autowired
     private ContestFileService contestFileService;
 
-
     @GetMapping("/download-contest-rank")
     @RequiresAuthentication
     public void downloadContestRank(@RequestParam("cid") Long cid,
@@ -42,13 +41,10 @@ public class ContestFileController {
         contestFileService.downloadContestACSubmission(cid, excludeAdmin, splitType, response);
     }
 
-
     @GetMapping("/download-contest-print-text")
     @RequiresAuthentication
     public void downloadContestPrintText(@RequestParam("id") Long id, HttpServletResponse response) throws StatusForbiddenException{
         contestFileService.downloadContestPrintText(id, response);
     }
-
-
 
 }

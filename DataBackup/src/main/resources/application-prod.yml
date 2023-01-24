@@ -1,18 +1,18 @@
 # 默认以下配置默认会读取环境变量的值
 
 # redis配置
-redis-host: ${REDIS_HOST:172.20.0.2}
+redis-host: ${REDIS_HOST:127.0.0.1}
 redis-port: ${REDIS_PORT:6379}
 redis-password: ${REDIS_PASSWORD:hoj123456}
 
 # 本服务连接mysql的地址和端口号
-mysql-host: ${MYSQL_HOST:172.20.0.3}
+mysql-host: ${MYSQL_HOST:127.0.0.1}
 mysql-port: ${MYSQL_PORT:3306}
 # mysql的公网地址和端口号
 mysql-public-host: ${MYSQL_PUBLIC_HOST:172.20.0.3}
 mysql-public-port: ${MYSQL_PUBLIC_PORT:3306}
 mysql-username: ${MYSQL_USERNAME:root}
-mysql-password: ${MYSQL_ROOT_PASSWORD:hoj123456}
+mysql-password: ${MYSQL_ROOT_PASSWORD:123456}
 mysql-name: ${MYSQL_DATABASE_NAME:hoj}
 
 # token密钥，default表示随机生成

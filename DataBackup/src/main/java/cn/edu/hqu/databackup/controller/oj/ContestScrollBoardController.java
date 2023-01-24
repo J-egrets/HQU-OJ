@@ -29,7 +29,6 @@ public class ContestScrollBoardController {
         return contestScrollBoardService.getContestScrollBoardInfo(cid);
     }
 
-
     @GetMapping("/get-contest-scroll-board-submission")
     public CommonResult<List<ContestScrollBoardSubmissionVO>> getContestScrollBoardSubmission(
             @RequestParam(value = "cid", required = true) Long cid,

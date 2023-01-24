@@ -20,7 +20,6 @@ import javax.annotation.Resource;
 @RequestMapping("/api/file")
 public class ImportFpsProblemController {
 
-
     @Resource
     private ImportFpsProblemService importFpsProblemService;
 
@@ -29,7 +28,6 @@ public class ImportFpsProblemController {
      * @MethodName importFpsProblem
      * @Description zip文件导入题目 仅超级管理员可操作
      * @Return
-     * @Since 2021/10/06
      */
     @RequiresRoles("root")
     @RequiresAuthentication
@@ -38,6 +36,5 @@ public class ImportFpsProblemController {
     public CommonResult<Void> importFPSProblem(@RequestParam("file") MultipartFile file) {
         return importFpsProblemService.importFPSProblem(file);
     }
-
 
 }

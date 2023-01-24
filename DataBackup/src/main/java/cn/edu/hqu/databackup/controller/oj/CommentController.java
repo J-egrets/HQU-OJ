@@ -26,7 +26,6 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-
     @GetMapping("/comments")
     @AnonApi
     public CommonResult<CommentListVO> getComments(@RequestParam(value = "cid", required = false) Long cid,
@@ -35,7 +34,6 @@ public class CommentController {
                                                    @RequestParam(value = "currentPage", required = false, defaultValue = "1") Integer currentPage) {
         return commentService.getComments(cid, did, limit, currentPage);
     }
-
 
     @PostMapping("/comment")
     @RequiresPermissions("comment_add")

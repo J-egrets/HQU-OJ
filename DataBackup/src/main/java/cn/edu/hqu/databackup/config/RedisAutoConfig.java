@@ -38,7 +38,6 @@ public class RedisAutoConfig {
     @Autowired
     private JedisPoolConfigure jedisPoolConfigure;
 
-
     @Bean
     public RedisConnectionFactory redisConnectionFactory(JedisPoolConfig jedisPool,
                                                          RedisStandaloneConfiguration jedisConfig) {

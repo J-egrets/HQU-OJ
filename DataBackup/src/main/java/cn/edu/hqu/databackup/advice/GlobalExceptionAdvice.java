@@ -64,7 +64,6 @@ public class GlobalExceptionAdvice {
         return CommonResult.errorResponse(e.getMessage(), ResultStatus.FAIL);
     }
 
-
     /**
      * 401 -UnAuthorized 处理AuthenticationException,token相关异常 即是认证出错 可能无法处理！
      */
@@ -143,7 +142,6 @@ public class GlobalExceptionAdvice {
         return CommonResult.errorResponse(objectError.getDefaultMessage(), ResultStatus.FAIL);
     }
 
-
     /**
      * 400 - Bad Request 处理缺少请求参数
      */
@@ -163,7 +161,6 @@ public class GlobalExceptionAdvice {
             HttpMessageNotReadableException e) {
         return CommonResult.errorResponse("Failed to parse parameter format!", ResultStatus.FAIL);
     }
-
 
     /**
      * 400 - Bad Request 参数绑定失败
@@ -219,7 +216,6 @@ public class GlobalExceptionAdvice {
         return CommonResult.errorResponse("The media type is not supported!", ResultStatus.FAIL);
     }
 
-
     /**
      * 500 - Internal Server Error 处理邮件发送出现的异常
      */
@@ -250,7 +246,6 @@ public class GlobalExceptionAdvice {
         return CommonResult.errorResponse("Server Error! Please try Again later!", ResultStatus.SYSTEM_ERROR);
     }
 
-
     /**
      * 500 - Internal Server Error 操作数据库出现异常
      */
@@ -271,7 +266,6 @@ public class GlobalExceptionAdvice {
         return CommonResult.errorResponse("请检查数据是否准确！可能原因：数据库中已有相同的数据导致重复冲突!", ResultStatus.SYSTEM_ERROR);
     }
 
-
     /**
      * 500 - Internal Server Error 系统通用异常
      */
@@ -281,7 +275,6 @@ public class GlobalExceptionAdvice {
         log.error("系统通用异常-------------->{}", getMessage(e));
         return CommonResult.errorResponse("Server Error!", ResultStatus.SYSTEM_ERROR);
     }
-
 
     /**
      * 打印异常信息

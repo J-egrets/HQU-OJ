@@ -25,7 +25,6 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
-
     @RequestMapping(value = "/upload-avatar", method = RequestMethod.POST)
     @RequiresAuthentication
     @ResponseBody

@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api")
 public class PassportController {
 
-
     @Autowired
     private PassportService passportService;
 
@@ -34,7 +33,6 @@ public class PassportController {
      * @MethodName login
      * @Description 处理登录逻辑
      * @Return CommonResult
-     * @Since 2020/10/24
      */
     @PostMapping("/login")
     @AnonApi
@@ -46,7 +44,6 @@ public class PassportController {
      * @MethodName getRegisterCode
      * @Description 调用邮件服务，发送注册流程的6位随机验证码
      * @Return
-     * @Since 2020/10/26
      */
     @RequestMapping(value = "/get-register-code", method = RequestMethod.GET)
     @AnonApi
@@ -60,7 +57,6 @@ public class PassportController {
      * @MethodName register
      * @Description 注册逻辑，具体参数请看RegisterDto类
      * @Return
-     * @Since 2020/10/24
      */
     @PostMapping("/register")
     @AnonApi
@@ -68,13 +64,11 @@ public class PassportController {
         return passportService.register(registerDto);
     }
 
-
     /**
      * @param applyResetPasswordDto
      * @MethodName applyResetPassword
      * @Description 发送重置密码的链接邮件
      * @Return
-     * @Since 2020/11/6
      */
     @PostMapping("/apply-reset-password")
     @AnonApi
@@ -82,13 +76,11 @@ public class PassportController {
         return passportService.applyResetPassword(applyResetPasswordDto);
     }
 
-
     /**
      * @param resetPasswordDto
      * @MethodName resetPassword
      * @Description 用户重置密码
      * @Return
-     * @Since 2020/11/6
      */
     @PostMapping("/reset-password")
     @AnonApi
@@ -96,12 +88,10 @@ public class PassportController {
         return passportService.resetPassword(resetPasswordDto);
     }
 
-
     /**
      * @MethodName logout
      * @Description 退出逻辑，将jwt在redis中清除，下次需要再次登录。
      * @Return CommonResult
-     * @Since 2020/10/24
      */
     @GetMapping("/logout")
     @RequiresAuthentication

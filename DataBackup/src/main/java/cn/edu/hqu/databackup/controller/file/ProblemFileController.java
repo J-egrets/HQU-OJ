@@ -21,13 +21,11 @@ public class ProblemFileController {
     @Autowired
     private ProblemFileService problemFileService;
 
-
     /**
      * @param file
      * @MethodName importProblem
      * @Description zip文件导入题目 仅超级管理员可操作
      * @Return
-     * @Since 2021/5/27
      */
     @RequiresRoles("root")
     @RequiresAuthentication
@@ -44,7 +42,6 @@ public class ProblemFileController {
      * @MethodName exportProblem
      * @Description 导出指定的题目包括测试数据生成zip 仅超级管理员可操作
      * @Return
-     * @Since 2021/5/28
      */
     @GetMapping("/export-problem")
     @RequiresAuthentication

@@ -35,7 +35,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedHeaders("*");
     }
 
-    // 前端直接通过/public/img/图片名称即可拿到
+    /**
+     * 前端直接通过/public/img/图片名称即可拿到
+     * @param registry
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // /api/public/img/** /api/public/file/**
