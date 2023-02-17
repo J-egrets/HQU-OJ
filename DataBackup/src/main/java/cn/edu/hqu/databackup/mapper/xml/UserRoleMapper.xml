@@ -22,6 +22,7 @@
         <result column="avatar" property="avatar"></result>
         <result column="gmt_create" property="gmtCreate"></result>
         <result column="gmt_modified" property="gmtModified"></result>
+        <result column="open_id" property="openId"></result>
         <collection property="roles" ofType="cn.edu.hqu.api.pojo.entity.user.Role">
             <id column="role_id" property="id"></id>
             <result column="role" property="role"></result>
@@ -44,6 +45,9 @@
             </if>
             <if test="username != null and username != ''">
                 and u.username = #{username}
+            </if>
+            <if test="openId != null and openId != ''">
+                and u.open_id = #{openId}
             </if>
         </where>
 

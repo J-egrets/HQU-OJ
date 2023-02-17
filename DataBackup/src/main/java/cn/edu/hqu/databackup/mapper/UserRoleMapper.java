@@ -23,7 +23,7 @@ import java.util.List;
 @Repository
 public interface UserRoleMapper extends BaseMapper<UserRole> {
 
-    UserRolesVO getUserRoles(@Param("uid") String uid, @Param("username") String username);
+    UserRolesVO getUserRoles(@Param("uid") String uid, @Param("username") String username, @Param("openId") String openId);
 
     List<Role> getRolesByUid(@Param("uid") String uid);
 

@@ -1,16 +1,24 @@
 package cn.edu.hqu.databackup.manager.oj;
 
+import cn.edu.hqu.databackup.common.result.CommonResult;
+import cn.edu.hqu.databackup.config.WxConfig;
+import cn.edu.hqu.databackup.pojo.dto.*;
+import cn.edu.hqu.databackup.utils.*;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import cn.edu.hqu.databackup.common.exception.StatusAccessDeniedException;
 import cn.edu.hqu.databackup.common.exception.StatusFailException;
 import cn.edu.hqu.databackup.common.exception.StatusForbiddenException;
@@ -23,29 +31,30 @@ import cn.edu.hqu.databackup.dao.user.UserRoleEntityService;
 import cn.edu.hqu.databackup.manager.email.EmailManager;
 import cn.edu.hqu.databackup.manager.msg.NoticeManager;
 import cn.edu.hqu.databackup.pojo.bo.EmailRuleBO;
-import cn.edu.hqu.databackup.pojo.dto.ApplyResetPasswordDTO;
-import cn.edu.hqu.databackup.pojo.dto.LoginDTO;
-import cn.edu.hqu.databackup.pojo.dto.RegisterDTO;
-import cn.edu.hqu.databackup.pojo.dto.ResetPasswordDTO;
 import cn.edu.hqu.api.pojo.entity.user.*;
 import cn.edu.hqu.databackup.pojo.vo.RegisterCodeVO;
 import cn.edu.hqu.databackup.pojo.vo.UserInfoVO;
 import cn.edu.hqu.databackup.pojo.vo.UserRolesVO;
 import cn.edu.hqu.databackup.shiro.AccountProfile;
-import cn.edu.hqu.databackup.utils.Constants;
-import cn.edu.hqu.databackup.utils.IpUtils;
-import cn.edu.hqu.databackup.utils.JwtUtils;
-import cn.edu.hqu.databackup.utils.RedisUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
  * @Author: egret
  */
 @Component
+@Slf4j(topic = "hoj")
 public class PassportManager {
 
     @Resource
@@ -78,6 +87,225 @@ public class PassportManager {
     @Resource
     private NoticeManager noticeManager;
 
+    @Autowired
+    private WxConfig wxConfig;
+
+    @Autowired
+    private TextReplyManager textReplyManager;
+
+    /**
+     * 获取accessToken
+     *
+     * @return
+     */
+    private String getAccessToken() throws Exception {
+        //根据appid和appsecret获取access_token
+        String getTokenUrl = wxConfig.getTokenUrl().replace("APPID", wxConfig.getAppId()).replace("APPSECRET", wxConfig.getAppSecret());
+        String result = HttpClientUtil.doGet(getTokenUrl);
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        return jsonObject.getString("access_token");
+    }
+
+    /**
+     * 获取二维码ticket
+     *
+     * @return
+     * @throws Exception
+     */
+    public JSONObject getQrCode() throws Exception {
+        // 获取token开发者
+        String accessToken = getAccessToken();
+        String getQrCodeUrl = wxConfig.getQrCodeUrl().replace("TOKEN", accessToken);
+        // 这里生成一个带参数的二维码，参数是scene_str
+        String sceneStr = CheckWXTokenUtils.getRandomString(8);
+        String json = "{\"expire_seconds\": 604800, \"action_name\": \"QR_STR_SCENE\"" + ", \"action_info\": {\"scene\": {\"scene_str\": \"" + sceneStr + "\"}}}";
+        String result = HttpClientUtil.doPostJson(getQrCodeUrl, json);
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        jsonObject.put("sceneStr", sceneStr);
+            /*  ticket
+                expire_seconds
+                url
+                sceneStr*/
+        return jsonObject;
+    }
+
+    /**
+     * 服务器校验及回调处理
+     *
+     * @param request
+     * @return
+     */
+    public String checkSign(HttpServletRequest request) throws Exception {
+        //获取微信请求参数
+        String signature = request.getParameter("signature");
+        String timestamp = request.getParameter("timestamp");
+        String nonce = request.getParameter("nonce");
+        String echostr = request.getParameter("echostr");
+        //参数排序 token 就要换成自己实际写的 token
+        String[] params = new String[]{timestamp, nonce, wxConfig.getToken()};
+        Arrays.sort(params);
+        //拼接
+        String paramstr = params[0] + params[1] + params[2];
+        //加密
+        //获取 shal 算法封装类
+        MessageDigest Sha1Dtgest = MessageDigest.getInstance("SHA-1");
+        //进行加密
+        byte[] digestResult = Sha1Dtgest.digest(paramstr.getBytes("UTF-8"));
+        //拿到加密结果
+        String mysignature = CheckWXTokenUtils.toHexString(digestResult);
+        mysignature = mysignature.toLowerCase(Locale.ROOT);
+        //是否正确
+        boolean signsuccess = mysignature.equals(signature);
+        //逻辑处理
+        if (signsuccess && echostr != null) {
+            //验证签名，接入服务器
+            return echostr;
+        } else {
+            //接入失败或已经接入成功后
+            return callback(request);
+        }
+    }
+
+    /**
+     * 回调方法
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    private String callback(HttpServletRequest request) throws Exception {
+        // request中有相应的信息，进行解析
+        // 获取消息流,并解析xml
+        WxMpXmlMessage message = WxMpXmlMessage.fromXml(request.getInputStream());
+        // 消息类型
+        String messageType = message.getMsgType();
+        // 发送者帐号openid
+        String fromUser = message.getFromUser();
+
+        //if判断，判断查询
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code", "200");
+        if ("event".equals(messageType)) {
+            // 先根据openid从数据库查询  => 从自己数据库中查取用户信息 => jsonObject
+            UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(null, null, fromUser);
+            if (userRolesVo == null) {
+                // 没有注册过
+                // 发送授权请求，进行注册
+                String respMessage = textReplyManager.callback(message);
+                if (StringUtils.isBlank(respMessage)) {
+                    log.info("不回复消息");
+                }
+
+                return respMessage;
+            }
+
+        }
+        return "<xml> <return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>";
+    }
+
+    public void oauthInvoke(HttpServletRequest request) throws Exception {
+        // 获取code
+        String code = request.getParameter("code");
+        String state = request.getParameter("state");
+        log.info("code" + code);
+        log.info("state" + state);
+
+        // 通过code换取网页授权的accessToekn
+        String getAccessToken = "https://api.weixin.qq.com/sns/oauth2/access_token?" +
+                "appid=" + wxConfig.getAppId() +
+                "&secret=" + wxConfig.getAppSecret() +
+                "&code=" + code +
+                "&grant_type=authorization_code";
+        String result = HttpClientUtil.doGet(getAccessToken);
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        String accessToken = jsonObject.getString("access_token");
+        String openId = jsonObject.getString("openid");
+        log.info("网页授权获取到的accessToekn为：" + accessToken);
+
+        // 获取用户详细信息
+        String getUserInfo = "https://api.weixin.qq.com/sns/userinfo?" +
+                "access_token=" + accessToken +
+                "&openid=" + openId +
+                "&lang=zh_CN";
+        String userInfo = HttpClientUtil.doGet(getUserInfo);
+        log.info("详细用户详细为：" + userInfo);
+        JSONObject userInfoJsonObject = JSONObject.parseObject(result);
+
+        // 注册新用户
+        // 数据库落库
+        UserInfo wxUserInfo = new UserInfo();
+        String uuid = IdUtil.simpleUUID();
+        //为新用户设置uuid
+        wxUserInfo.setUuid(uuid);
+        wxUserInfo.setNickname(userInfoJsonObject.getString("nickname"));
+        String sex = userInfoJsonObject.getString("sex");
+        wxUserInfo.setGender("0".equals(sex) ? "secrecy" : "1".equals(sex) ? "male" : "female");
+        wxUserInfo.setOpenId(userInfoJsonObject.getString("openid"));
+        wxUserInfo.setAvatar(userInfoJsonObject.getString("headimgurl"));
+
+        //往user_info表插入数据
+        boolean addUser = userInfoEntityService.addUser(wxUserInfo);
+
+        //往user_role表插入数据
+        boolean addUserRole = userRoleEntityService.save(new UserRole().setRoleId(1002L).setUid(uuid));
+
+        //往user_record表插入数据
+        boolean addUserRecord = userRecordEntityService.save(new UserRecord().setUid(uuid));
+
+        if (addUser && addUserRole && addUserRecord) {
+            noticeManager.syncNoticeToNewRegisterUser(uuid);
+        } else {
+            throw new StatusFailException("注册失败，请稍后重新尝试！");
+        }
+    }
+
+    public UserInfoVO wxLogin(WxLoginDTO wxLoginDTO, HttpServletResponse response, HttpServletRequest request) throws StatusFailException {
+        String userIpAddr = IpUtils.getUserIpAddr(request);
+        String key = Constants.Account.TRY_LOGIN_NUM.getCode() + wxLoginDTO.getOpenId() + "_" + userIpAddr;
+        // 获取登录次数
+        Integer tryLoginCount = (Integer) redisUtils.get(key);
+
+        if (tryLoginCount != null && tryLoginCount >= 20) {
+            throw new StatusFailException("对不起！登录失败次数过多！您的账号有风险，半个小时内暂时无法登录！");
+        }
+
+        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(null, null, wxLoginDTO.getOpenId());
+
+        if (userRolesVo == null) {
+            throw new StatusFailException("用户不存在");
+        }
+
+        if (userRolesVo.getStatus() != 0) {
+            throw new StatusFailException("该账户已被封禁，请联系管理员进行处理！");
+        }
+
+        String jwt = jwtUtils.generateToken(userRolesVo.getUid());
+        response.setHeader("Authorization", jwt); //放到信息头部
+        response.setHeader("Access-Control-Expose-Headers", "Authorization");
+
+        // 会话记录
+        sessionEntityService.save(new Session()
+                .setUid(userRolesVo.getUid())
+                .setIp(IpUtils.getUserIpAddr(request))
+                .setUserAgent(request.getHeader("User-Agent")));
+
+        // 登录成功，清除锁定限制
+        if (tryLoginCount != null) {
+            redisUtils.del(key);
+        }
+
+        // 异步检查是否异地登录
+        sessionEntityService.checkRemoteLogin(userRolesVo.getUid());
+
+        UserInfoVO userInfoVo = new UserInfoVO();
+        BeanUtil.copyProperties(userRolesVo, userInfoVo, "roles");
+        userInfoVo.setRoleList(userRolesVo.getRoles()
+                .stream()
+                .map(Role::getRole)
+                .collect(Collectors.toList()));
+        return userInfoVo;
+    }
+
     public UserInfoVO login(LoginDTO loginDto, HttpServletResponse response, HttpServletRequest request) throws StatusFailException {
         // 去掉账号密码首尾的空格
         loginDto.setPassword(loginDto.getPassword().trim());
@@ -102,7 +330,7 @@ public class PassportManager {
             throw new StatusFailException("对不起！登录失败次数过多！您的账号有风险，半个小时内暂时无法登录！");
         }
 
-        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(null, loginDto.getUsername());
+        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(null, loginDto.getUsername(), null);
 
         if (userRolesVo == null) {
             throw new StatusFailException("用户名或密码错误！请注意大小写！");

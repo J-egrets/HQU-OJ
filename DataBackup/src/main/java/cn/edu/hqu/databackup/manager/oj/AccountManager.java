@@ -420,7 +420,7 @@ public class AccountManager {
             boolean isOk = userInfoEntityService.update(updateWrapper);
             if (isOk) {
 
-                UserRolesVO userRoles = userRoleEntityService.getUserRoles(userRolesVo.getUid(), null);
+                UserRolesVO userRoles = userRoleEntityService.getUserRoles(userRolesVo.getUid(), null,null);
                 UserInfoVO userInfoVo = new UserInfoVO();
 
                 BeanUtil.copyProperties(userRoles, userInfoVo, "roles");
@@ -488,7 +488,7 @@ public class AccountManager {
         boolean isOk = userInfoEntityService.update(updateWrapper);
 
         if (isOk) {
-            UserRolesVO userRoles = userRoleEntityService.getUserRoles(userRolesVo.getUid(), null);
+            UserRolesVO userRoles = userRoleEntityService.getUserRoles(userRolesVo.getUid(), null,null);
             // 更新session
             BeanUtil.copyProperties(userRoles, userRolesVo);
             UserInfoVO userInfoVO = new UserInfoVO();

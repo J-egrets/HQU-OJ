@@ -2,12 +2,12 @@ package cn.edu.hqu.databackup.service.oj;
 
 
 import cn.edu.hqu.databackup.common.result.CommonResult;
-import cn.edu.hqu.databackup.pojo.dto.ApplyResetPasswordDTO;
-import cn.edu.hqu.databackup.pojo.dto.LoginDTO;
-import cn.edu.hqu.databackup.pojo.dto.RegisterDTO;
-import cn.edu.hqu.databackup.pojo.dto.ResetPasswordDTO;
+import cn.edu.hqu.databackup.pojo.dto.*;
 import cn.edu.hqu.databackup.pojo.vo.RegisterCodeVO;
 import cn.edu.hqu.databackup.pojo.vo.UserInfoVO;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,15 +17,23 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface PassportService {
 
-    public CommonResult<UserInfoVO> login(LoginDTO loginDto, HttpServletResponse response, HttpServletRequest request);
+    CommonResult<JSONObject> getQrCode();
 
-    public CommonResult<RegisterCodeVO> getRegisterCode(String email);
+    String checkSign (HttpServletRequest request);
 
-    public CommonResult<Void> register(RegisterDTO registerDto);
+    void oauthInvoke(HttpServletRequest request);
 
-    public CommonResult<Void> applyResetPassword(ApplyResetPasswordDTO applyResetPasswordDto);
+    CommonResult<UserInfoVO> wxLogin(@Validated @RequestBody WxLoginDTO wxLoginDTO, HttpServletResponse response, HttpServletRequest request);
 
-    public CommonResult<Void> resetPassword(ResetPasswordDTO resetPasswordDto);
+    CommonResult<UserInfoVO> login(LoginDTO loginDto, HttpServletResponse response, HttpServletRequest request);
 
-    public CommonResult<Void> logout();
+    CommonResult<RegisterCodeVO> getRegisterCode(String email);
+
+    CommonResult<Void> register(RegisterDTO registerDto);
+
+    CommonResult<Void> applyResetPassword(ApplyResetPasswordDTO applyResetPasswordDto);
+
+    CommonResult<Void> resetPassword(ResetPasswordDTO resetPasswordDto);
+
+    CommonResult<Void> logout();
 }

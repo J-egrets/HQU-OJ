@@ -59,6 +59,9 @@ public class UserInfoVO {
     @ApiModelProperty(value = "cf的username")
     private String cfUsername;
 
+    @ApiModelProperty(value = "微信openId")
+    private String openId;
+
     @ApiModelProperty(value = "角色列表")
     private List<String> roleList;
 

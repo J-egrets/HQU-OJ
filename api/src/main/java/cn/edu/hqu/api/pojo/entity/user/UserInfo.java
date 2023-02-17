@@ -98,5 +98,8 @@ public class UserInfo implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    @ApiModelProperty(value = "openId")
+    private String openId;
 
 }

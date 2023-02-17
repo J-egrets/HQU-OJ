@@ -122,3 +122,14 @@ logging:
   config: classpath:logback-spring.xml
   file:
     path: /hoj/log/backend
+
+#微信扫码配置
+wx:
+  appId: wxa824cdd774f576bc
+  appSecret: 1f05d7b946c93b19ca53e8be73b43356
+  token: Eioa5C5oj3S32qhH
+  server: https://ministudy.sciba.cn
+  qrCodeUrl: https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN
+  tokenUrl: https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+  openIdUrl: https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+  userInfoUrl: https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN

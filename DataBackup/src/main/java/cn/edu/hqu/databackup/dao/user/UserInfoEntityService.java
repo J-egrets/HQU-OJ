@@ -15,9 +15,11 @@ import java.util.List;
  */
 public interface UserInfoEntityService extends IService<UserInfo> {
 
-    public Boolean addUser(RegisterDTO registerDto);
+    Boolean addUser(RegisterDTO registerDto);
 
-    public List<String> getSuperAdminUidList();
+    Boolean addUser(UserInfo wxUserInfo);
 
-    public List<String> getProblemAdminUidList();
+    List<String> getSuperAdminUidList();
+
+    List<String> getProblemAdminUidList();
 }

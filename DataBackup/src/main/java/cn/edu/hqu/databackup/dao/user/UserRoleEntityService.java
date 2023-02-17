@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface UserRoleEntityService extends IService<UserRole> {
 
-    UserRolesVO getUserRoles(String uid, String username);
+    UserRolesVO getUserRoles(String uid, String username, String openId);
 
     List<Role> getRolesByUid(String uid);
 

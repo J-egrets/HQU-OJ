@@ -78,6 +78,9 @@ public class UserRolesVO implements Serializable {
     @ApiModelProperty(value = "修改时间")
     private Date gmtModified;
 
+    @ApiModelProperty(value = "微信openId")
+    private String openId;
+
     @ApiModelProperty(value = "角色列表")
     private List<Role> roles;
 }

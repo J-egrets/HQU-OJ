@@ -61,7 +61,7 @@ public class AdminAccountManager {
             throw new StatusFailException("对不起！登录失败次数过多！您的账号有风险，半个小时内暂时无法登录！");
         }
 
-        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(null, loginDto.getUsername());
+        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(null, loginDto.getUsername(),null);
 
         if (userRolesVo == null) {
             throw new StatusFailException("用户名或密码错误");

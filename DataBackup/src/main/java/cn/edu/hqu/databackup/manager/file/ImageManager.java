@@ -98,7 +98,7 @@ public class ImageManager {
         // 更新session
         accountProfile.setAvatar(Constants.File.IMG_API.getPath() + filename);
 
-        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(accountProfile.getUid(), null);
+        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(accountProfile.getUid(), null,null);
 
         return MapUtil.builder()
                 .put("uid", userRolesVo.getUid())

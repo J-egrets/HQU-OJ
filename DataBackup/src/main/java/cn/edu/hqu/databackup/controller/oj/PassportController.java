@@ -1,5 +1,6 @@
 package cn.edu.hqu.databackup.controller.oj;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;

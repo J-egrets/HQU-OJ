@@ -39,8 +39,8 @@ public class UserRoleEntityServiceImpl extends ServiceImpl<UserRoleMapper, UserR
     private RedisUtils redisUtils;
 
     @Override
-    public UserRolesVO getUserRoles(String uid, String username) {
-        return userRoleMapper.getUserRoles(uid, username);
+    public UserRolesVO getUserRoles(String uid, String username,String openId) {
+        return userRoleMapper.getUserRoles(uid, username, openId);
     }
 
     @Override

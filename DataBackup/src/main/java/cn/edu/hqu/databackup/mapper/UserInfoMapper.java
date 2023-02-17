@@ -21,6 +21,8 @@ import java.util.List;
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
     int addUser(RegisterDTO registerDto);
 
+    int addWxUser(UserInfo wxUserInfo);
+
     List<String> getSuperAdminUidList();
 
     List<String> getProblemAdminUidList();

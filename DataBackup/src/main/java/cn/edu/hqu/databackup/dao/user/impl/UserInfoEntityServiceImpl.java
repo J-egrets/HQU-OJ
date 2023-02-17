@@ -34,6 +34,11 @@ public class UserInfoEntityServiceImpl extends ServiceImpl<UserInfoMapper, UserI
     }
 
     @Override
+    public Boolean addUser(UserInfo wxUserInfo) {
+        return userInfoMapper.addWxUser(wxUserInfo) == 1;
+    }
+
+    @Override
     public List<String> getSuperAdminUidList() {
 
         String cacheKey = Constants.Account.SUPER_ADMIN_UID_LIST_CACHE.getCode();
