@@ -2,7 +2,6 @@ package cn.edu.hqu.databackup.controller.oj;
 
 import cn.edu.hqu.databackup.annotation.AnonApi;
 import cn.edu.hqu.databackup.common.result.CommonResult;
-import cn.edu.hqu.databackup.pojo.dto.LoginDTO;
 import cn.edu.hqu.databackup.pojo.dto.WxLoginDTO;
 import cn.edu.hqu.databackup.pojo.vo.UserInfoVO;
 import cn.edu.hqu.databackup.service.oj.PassportService;
