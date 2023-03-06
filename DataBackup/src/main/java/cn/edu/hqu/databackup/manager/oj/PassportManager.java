@@ -177,17 +177,32 @@ public class PassportManager {
         // request中有相应的信息，进行解析
         // 获取消息流,并解析xml
         WxMpXmlMessage message = WxMpXmlMessage.fromXml(request.getInputStream());
+        log.info("message为" + message.toString());
         // 消息类型
         String messageType = message.getMsgType();
         // 发送者帐号openid
         String fromUser = message.getFromUser();
+        String event = message.getEvent();
+        // 生成二维码时穿过的特殊参数
+        String sceneStr =message.getEventKey();
 
         //if判断，判断查询
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", "200");
         if ("event".equals(messageType)) {
+
             // 先根据openid从数据库查询  => 从自己数据库中查取用户信息 => jsonObject
             UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(null, null, fromUser);
+
+            log.info("sceneStr放缓存"+sceneStr);
+            if("subscribe".equals(event)){
+                // 用户关注
+                redisUtils.set(sceneStr.replaceAll("qrscene_",""),fromUser,200);
+            }else if("SCAN".equals(event)){
+                // 用户扫码
+                redisUtils.set(sceneStr,fromUser,200);
+            }else if("LOCATION".equals(event)){
+                // 地理位置，暂时不处理
+            }
+
             if (userRolesVo == null) {
                 // 没有注册过
                 // 发送授权请求，进行注册
@@ -195,12 +210,11 @@ public class PassportManager {
                 if (StringUtils.isBlank(respMessage)) {
                     log.info("不回复消息");
                 }
-
                 return respMessage;
             }
 
         }
-        return "<xml> <return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>";
+        return "success";
     }
 
     public void oauthInvoke(HttpServletRequest request) throws Exception {
@@ -229,19 +243,24 @@ public class PassportManager {
                 "&lang=zh_CN";
         String userInfo = HttpClientUtil.doGet(getUserInfo);
         log.info("详细用户详细为：" + userInfo);
-        JSONObject userInfoJsonObject = JSONObject.parseObject(result);
+        JSONObject userInfoJsonObject = JSONObject.parseObject(userInfo);
 
+        log.info("userInfoJsonObject为" + userInfoJsonObject);
         // 注册新用户
         // 数据库落库
         UserInfo wxUserInfo = new UserInfo();
         String uuid = IdUtil.simpleUUID();
         //为新用户设置uuid
         wxUserInfo.setUuid(uuid);
+        wxUserInfo.setUsername(userInfoJsonObject.getString("openid"));
+        wxUserInfo.setPassword("hojTest123456");
         wxUserInfo.setNickname(userInfoJsonObject.getString("nickname"));
         String sex = userInfoJsonObject.getString("sex");
         wxUserInfo.setGender("0".equals(sex) ? "secrecy" : "1".equals(sex) ? "male" : "female");
         wxUserInfo.setOpenId(userInfoJsonObject.getString("openid"));
         wxUserInfo.setAvatar(userInfoJsonObject.getString("headimgurl"));
+        log.info("UserInfo为" + wxUserInfo);
+
 
         //往user_info表插入数据
         boolean addUser = userInfoEntityService.addUser(wxUserInfo);
@@ -261,7 +280,16 @@ public class PassportManager {
 
     public UserInfoVO wxLogin(WxLoginDTO wxLoginDTO, HttpServletResponse response, HttpServletRequest request) throws StatusFailException {
         String userIpAddr = IpUtils.getUserIpAddr(request);
-        String key = Constants.Account.TRY_LOGIN_NUM.getCode() + wxLoginDTO.getOpenId() + "_" + userIpAddr;
+        String openId = (String) redisUtils.get(wxLoginDTO.getSceneStr());
+
+        log.info("openId为：" + openId);
+        log.info("SceneStr为：" + wxLoginDTO.getSceneStr());
+        if(StringUtils.isEmpty(openId)){
+            return null;
+        }else{
+            redisUtils.del(wxLoginDTO.getSceneStr());
+        }
+        String key = Constants.Account.TRY_LOGIN_NUM.getCode() + openId + "_" + userIpAddr;
         // 获取登录次数
         Integer tryLoginCount = (Integer) redisUtils.get(key);
 
@@ -269,7 +297,7 @@ public class PassportManager {
             throw new StatusFailException("对不起！登录失败次数过多！您的账号有风险，半个小时内暂时无法登录！");
         }
 
-        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(null, null, wxLoginDTO.getOpenId());
+        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(null, null, openId);
 
         if (userRolesVo == null) {
             throw new StatusFailException("用户不存在");

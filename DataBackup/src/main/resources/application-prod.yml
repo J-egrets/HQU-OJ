@@ -28,13 +28,13 @@ open-remote-judge: ${OPEN_REMOTE_JUDGE:true}
 judge-token: ${JUDGE_TOKEN:default}
 
 # 邮箱服务地址
-email-host: ${EMAIL_SERVER_HOST:smtp.qq.com}
+email-host: ${EMAIL_SERVER_HOST:smtp.163.com}
 # 邮箱服务端口号
 email-port: ${EMAIL_SERVER_PORT:465}
 # 邮箱账号
-email-username: ${EMAIL_USERNAME:your_email_username}
+email-username: ${EMAIL_USERNAME:jegret812@163.com}
 # 邮箱授权码
-email-password: ${EMAIL_PASSWORD:your_email_password}
+email-password: ${EMAIL_PASSWORD:ZWAVUMOZLSWXUKBQ}
 
 # 以下为各个remote judge平台的账号配置
 hdu-username-list: ${HDU_ACCOUNT_USERNAME_LIST:}

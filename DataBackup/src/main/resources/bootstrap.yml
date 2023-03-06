@@ -7,7 +7,7 @@ nacos-web-config: hoj-web.yml
 
 spring:
   profiles:
-    active: dev
+    active: prod
   application:
     name: hoj-data-backup
   cloud:

@@ -8,8 +8,8 @@
     </insert>
 
     <insert id="addWxUser" parameterType="cn.edu.hqu.api.pojo.entity.user.UserInfo">
-        insert into user_info(uuid,nickname,gender,open_id,avatar) values (
-            #{uuid}, #{nickname},#{gender},#{openId},#{avatar}
+        insert into user_info(uuid,username,password,nickname,gender,open_id,avatar) values (
+            #{uuid},#{username},#{password},#{nickname},#{gender},#{openId},#{avatar}
         )
     </insert>
     <select id="getSuperAdminUidList" resultType="java.lang.String" useCache="true">

@@ -196,12 +196,12 @@ public class AdminUserManager {
                 .setUuid(uuid)
                 .setUsername(user.get(0))
                 .setPassword(SecureUtil.md5(user.get(1)))
-                .setEmail(user.size() <= 2 || StringUtils.isEmpty(user.get(2)) ? null : user.get(2));
+                .setRealname(user.size() <= 2 || StringUtils.isEmpty(user.get(2)) ? null : user.get(2));
 
         if (user.size() >= 4) {
-            String realname = user.get(3);
-            if (!StringUtils.isEmpty(realname)) {
-                userInfo.setRealname(user.get(3));
+            String email = user.get(3);
+            if (!StringUtils.isEmpty(email)) {
+                userInfo.setEmail(email);
             }
         }
 

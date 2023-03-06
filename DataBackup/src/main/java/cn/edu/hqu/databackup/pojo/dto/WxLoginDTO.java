@@ -13,8 +13,8 @@ import java.io.Serializable;
 public class WxLoginDTO implements Serializable {
 
     /**
-     * 微信登录openId
+     * 微信登录sceneStr
      */
-    @NotBlank(message = "openId不能为空")
-    public String openId;
+    @NotBlank(message = "sceneStr不能为空")
+    public String sceneStr;
 }

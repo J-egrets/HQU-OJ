@@ -25,6 +25,9 @@ public class UserHomeVO {
     @ApiModelProperty(value = "学校")
     private String school;
 
+    @ApiModelProperty(value = "专业")
+    private String course;
+
     @ApiModelProperty(value = "个性签名")
     private String signature;
 

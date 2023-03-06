@@ -1,6 +1,7 @@
 package cn.edu.hqu.databackup.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
@@ -53,15 +54,16 @@ public class JwtUtils {
     }
 
     public Claims getClaimByToken(String token) {
+        Claims claims;
         try {
-            return Jwts.parser()
+            claims = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (Exception e) {
-            log.debug("validate is token error ", e);
-            return null;
+        } catch (ExpiredJwtException e) {
+            claims = e.getClaims();
         }
+        return claims;
     }
 
     public void cleanToken(String uid) {

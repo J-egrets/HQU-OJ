@@ -467,6 +467,7 @@ public class AccountManager {
         commonValidator.validateContentLength(userInfoVo.getBlog(), "博客", 255);
         commonValidator.validateContentLength(userInfoVo.getGithub(), "Github", 255);
         commonValidator.validateContentLength(userInfoVo.getSchool(), "学校", 100);
+        commonValidator.validateContentLength(userInfoVo.getCourse(), "专业", 100);
         commonValidator.validateContentLength(userInfoVo.getNumber(), "学号", 200);
         commonValidator.validateContentLength(userInfoVo.getCfUsername(), "Codeforces用户名", 255);
 
@@ -483,6 +484,7 @@ public class AccountManager {
                 .set("gender", userInfoVo.getGender())
                 .set("github", userInfoVo.getGithub())
                 .set("school", userInfoVo.getSchool())
+                .set("course", userInfoVo.getCourse())
                 .set("number", userInfoVo.getNumber());
 
         boolean isOk = userInfoEntityService.update(updateWrapper);

@@ -4,6 +4,7 @@ import cn.edu.hqu.api.pojo.entity.msg.TextMessage;
 import cn.edu.hqu.databackup.common.constant.WechatMsgTypeConstant;
 import cn.edu.hqu.databackup.utils.WechatMessageUtils;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import java.util.Map;
  * @author egret
  */
 @Component
+@Slf4j(topic = "hoj")
 public class TextReplyManager {
 
     private static final String FROM_USER_NAME = "FromUserName";
@@ -34,15 +36,18 @@ public class TextReplyManager {
         Map<String, String> requestMap = WechatMessageUtils.parseXml(message);
         // 消息类型
         String msgType = requestMap.get("MsgType");
-
+log.info("map:" + requestMap);
+log.info("msgType:" + msgType);
         // 处理其他消息，暂时不做回复
         switch (msgType) {
-            case WechatMsgTypeConstant.MESSAGE_TYPE_TEXT: {
-                // 文本消息处理
+            case WechatMsgTypeConstant.MESSAGE_TYPE_EVENT: {
+                // 回复授权信息
+                log.info("回复授权信息");
                 return reply(requestMap);
             }
             default: {
                 // 不做回复
+                log.info("不做回复");
                 return null;
             }
         }
@@ -68,8 +73,9 @@ public class TextReplyManager {
                 "&response_type=code" +
                 "&scope=snsapi_userinfo" +
                 "&state=nothing" +
+                "&forcePopup=true" +
                 "#wechat_redirect";
-        textMessage.setContent("<a href=\"" + href + "\">授权！</a>");
+        textMessage.setContent("<a href=\"" + href + "\">授权注册！</a>");
         return WechatMessageUtils.textMessageToXml(textMessage);
     }
 }

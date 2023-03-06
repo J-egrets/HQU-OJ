@@ -10,4 +10,12 @@ public class WechatMsgTypeConstant {
      */
     public static final String MESSAGE_TYPE_TEXT = "text";
 
+
+    /**
+     * 事件
+     */
+    public static final String MESSAGE_TYPE_EVENT = "event";
+
+
+
 }

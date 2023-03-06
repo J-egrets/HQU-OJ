@@ -68,6 +68,7 @@
         <id column="uid" property="uid"></id>
         <result column="username" property="username"></result>
         <result column="school" property="school"></result>
+        <result column="course" property="course"></result>
         <result column="signature" property="signature"></result>
         <result column="nickname" property="nickname"></result>
         <result column="github" property="github"></result>
@@ -82,7 +83,7 @@
     </resultMap>
 
     <select id="getUserHomeInfo" resultMap="map_UserHomeVo">
-        SELECT u.uuid as uid,u.username,u.nickname,u.gender,u.signature,u.school,u.github,u.blog,
+        SELECT u.uuid as uid,u.username,u.nickname,u.gender,u.signature,u.school,u.course,u.github,u.blog,
         u.avatar,u.title_name,u.title_color,ur.rating,
         (SELECT COUNT(uid) FROM judge WHERE uid=u.uuid AND cid=0 AND gid is null) AS total
         FROM user_info u,user_record ur

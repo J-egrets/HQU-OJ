@@ -40,7 +40,7 @@ public class PassportServiceImpl implements PassportService {
         try {
             return passportManager.checkSign(request);
         } catch (Exception e) {
-            return "<xml><return_code><![CDATA[FAIL]]></return_code></xml>";
+            return "fail";
         }
     }
 
@@ -56,7 +56,12 @@ public class PassportServiceImpl implements PassportService {
     @Override
     public CommonResult<UserInfoVO> wxLogin(WxLoginDTO wxLoginDTO, HttpServletResponse response, HttpServletRequest request) {
         try {
-            return CommonResult.successResponse(passportManager.wxLogin(wxLoginDTO,response,request));
+            UserInfoVO userInfoVO = passportManager.wxLogin(wxLoginDTO, response, request);
+            if(userInfoVO != null){
+                return CommonResult.successResponse(userInfoVO);
+            }else{
+                return CommonResult.errorResponse("登录中");
+            }
         } catch (Exception e) {
             return CommonResult.errorResponse(e.getMessage());
         }
