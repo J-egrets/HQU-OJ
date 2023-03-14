@@ -22,4 +22,7 @@ public interface UserInfoEntityService extends IService<UserInfo> {
     List<String> getSuperAdminUidList();
 
     List<String> getProblemAdminUidList();
+
+    UserInfo getUserInfo(String uid);
+
 }

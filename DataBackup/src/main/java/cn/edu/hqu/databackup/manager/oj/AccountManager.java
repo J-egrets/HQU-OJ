@@ -470,6 +470,8 @@ public class AccountManager {
         commonValidator.validateContentLength(userInfoVo.getCourse(), "专业", 100);
         commonValidator.validateContentLength(userInfoVo.getNumber(), "学号", 200);
         commonValidator.validateContentLength(userInfoVo.getCfUsername(), "Codeforces用户名", 255);
+        commonValidator.validateContentLength(userInfoVo.getGrade(), "年级", 255);
+        commonValidator.validateContentLength(userInfoVo.getPhoneNumber(), "手机号", 11);
 
         // 获取当前登录的用户
         AccountProfile userRolesVo = (AccountProfile) SecurityUtils.getSubject().getPrincipal();
@@ -485,7 +487,9 @@ public class AccountManager {
                 .set("github", userInfoVo.getGithub())
                 .set("school", userInfoVo.getSchool())
                 .set("course", userInfoVo.getCourse())
-                .set("number", userInfoVo.getNumber());
+                .set("number", userInfoVo.getNumber())
+                .set("grade",userInfoVo.getGrade())
+                .set("phone_number",userInfoVo.getPhoneNumber());
 
         boolean isOk = userInfoEntityService.update(updateWrapper);
 

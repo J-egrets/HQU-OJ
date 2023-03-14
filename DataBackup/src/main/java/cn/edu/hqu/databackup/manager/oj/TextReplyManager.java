@@ -36,8 +36,8 @@ public class TextReplyManager {
         Map<String, String> requestMap = WechatMessageUtils.parseXml(message);
         // 消息类型
         String msgType = requestMap.get("MsgType");
-log.info("map:" + requestMap);
-log.info("msgType:" + msgType);
+        log.info("map:" + requestMap);
+        log.info("msgType:" + msgType);
         // 处理其他消息，暂时不做回复
         switch (msgType) {
             case WechatMsgTypeConstant.MESSAGE_TYPE_EVENT: {
@@ -73,8 +73,8 @@ log.info("msgType:" + msgType);
                 "&response_type=code" +
                 "&scope=snsapi_userinfo" +
                 "&state=nothing" +
-                "&forcePopup=true" +
-                "#wechat_redirect";
+                "#wechat_redirect" +
+                "&forcePopup=true";
         textMessage.setContent("<a href=\"" + href + "\">授权注册！</a>");
         return WechatMessageUtils.textMessageToXml(textMessage);
     }

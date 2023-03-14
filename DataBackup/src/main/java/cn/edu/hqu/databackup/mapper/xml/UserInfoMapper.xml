@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.edu.hqu.databackup.mapper.UserInfoMapper">
+
+    <resultMap id="map_UserInfo" type="cn.edu.hqu.api.pojo.entity.user.UserInfo">
+        <id column="uuid" property="uuid"></id>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <result column="nickname" property="nickname"></result>
+        <result column="school" property="school"></result>
+        <result column="course" property="course"></result>
+        <result column="number" property="number"></result>
+        <result column="gender" property="gender"></result>
+        <result column="realname" property="realname"></result>
+        <result column="cf_username" property="cfUsername"></result>
+        <result column="github" property="github"></result>
+        <result column="blog" property="blog"></result>
+        <result column="email" property="email"></result>
+        <result column="signature" property="signature"></result>
+        <result column="title_name" property="titleName"></result>
+        <result column="title_color" property="titleColor"></result>
+        <result column="status" property="status"></result>
+        <result column="avatar" property="avatar"></result>
+        <result column="gmt_create" property="gmtCreate"></result>
+        <result column="gmt_modified" property="gmtModified"></result>
+        <result column="open_id" property="openId"></result>
+        <result column="grade" property="grade"></result>
+        <result column="phone_number" property="phoneNumber"></result>
+    </resultMap>
+
     <insert id="addUser" parameterType="cn.edu.hqu.databackup.pojo.dto.RegisterDTO">
         insert into user_info(uuid,username,password,email) values (
            #{uuid}, #{username},#{password},#{email}
@@ -12,11 +39,22 @@
             #{uuid},#{username},#{password},#{nickname},#{gender},#{openId},#{avatar}
         )
     </insert>
+
     <select id="getSuperAdminUidList" resultType="java.lang.String" useCache="true">
         select ur.uid from user_role ur where ur.role_id = 1000
     </select>
 
     <select id="getProblemAdminUidList" resultType="java.lang.String" useCache="true">
         select ur.uid from user_role ur where ur.role_id = 1008
+    </select>
+
+    <select id="getUserInfo" resultMap="map_UserInfo">
+        SELECT
+        u.* FROM user_info u
+        <where>
+            <if test="uid != null and uid != ''">
+                u.uuid = #{uid}
+            </if>
+        </where>
     </select>
 </mapper>

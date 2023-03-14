@@ -112,12 +112,17 @@ public class PassportManager {
      * @return
      * @throws Exception
      */
-    public JSONObject getQrCode() throws Exception {
+    public JSONObject getQrCode(Boolean bind) throws Exception {
         // 获取token开发者
         String accessToken = getAccessToken();
         String getQrCodeUrl = wxConfig.getQrCodeUrl().replace("TOKEN", accessToken);
         // 这里生成一个带参数的二维码，参数是scene_str
         String sceneStr = CheckWXTokenUtils.getRandomString(8);
+        if(bind){
+            // 获取当前登录的用户
+            AccountProfile userRolesVo = (AccountProfile) SecurityUtils.getSubject().getPrincipal();
+            sceneStr = "bind_" + userRolesVo.getUid();
+        }
         String json = "{\"expire_seconds\": 604800, \"action_name\": \"QR_STR_SCENE\"" + ", \"action_info\": {\"scene\": {\"scene_str\": \"" + sceneStr + "\"}}}";
         String result = HttpClientUtil.doPostJson(getQrCodeUrl, json);
         JSONObject jsonObject = JSONObject.parseObject(result);
@@ -195,29 +200,74 @@ public class PassportManager {
             log.info("sceneStr放缓存"+sceneStr);
             if("subscribe".equals(event)){
                 // 用户关注
-                redisUtils.set(sceneStr.replaceAll("qrscene_",""),fromUser,200);
+                sceneStr = sceneStr.replaceAll("qrscene_","");
+                redisUtils.set(sceneStr,fromUser,200);
+                boolean dealWxBindResult = dealWxBind(userRolesVo,sceneStr,fromUser);
+                if(dealWxBindResult){
+                    return "success";
+                }
+                if (userRolesVo == null) {
+                    // 没有注册过
+                    // 发送授权请求，进行注册
+                    String respMessage = textReplyManager.callback(message);
+                    if (StringUtils.isBlank(respMessage)) {
+                        log.info("不回复消息");
+                    }
+                    return respMessage;
+                }
             }else if("SCAN".equals(event)){
                 // 用户扫码
                 redisUtils.set(sceneStr,fromUser,200);
+                boolean dealWxBindResult = dealWxBind(userRolesVo,sceneStr,fromUser);
+                if(dealWxBindResult){
+                    return "success";
+                }
+                if (userRolesVo == null) {
+                    // 没有注册过
+                    // 发送授权请求，进行注册
+                    String respMessage = textReplyManager.callback(message);
+                    if (StringUtils.isBlank(respMessage)) {
+                        log.info("不回复消息");
+                    }
+                    return respMessage;
+                }
             }else if("LOCATION".equals(event)){
                 // 地理位置，暂时不处理
-            }
-
-            if (userRolesVo == null) {
-                // 没有注册过
-                // 发送授权请求，进行注册
-                String respMessage = textReplyManager.callback(message);
-                if (StringUtils.isBlank(respMessage)) {
-                    log.info("不回复消息");
-                }
-                return respMessage;
             }
 
         }
         return "success";
     }
 
-    public void oauthInvoke(HttpServletRequest request) throws Exception {
+    /**
+     * 处理微信绑定逻辑
+     * @param userRolesVo
+     * @param sceneStr
+     * @param fromUser
+     * @return
+     * @throws StatusFailException
+     */
+    private boolean dealWxBind(UserRolesVO userRolesVo, String sceneStr, String fromUser) throws StatusFailException {
+
+        if(sceneStr.startsWith("bind_")){
+            if(userRolesVo != null){
+                // 此微信号已经被绑定了
+                return false;
+            }
+            // 获取绑定用户的uid
+            String uid = sceneStr.replaceAll("bind_","");
+            UpdateWrapper<UserInfo> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("uuid", uid)
+                    .set("open_id", fromUser);
+            userInfoEntityService.update(updateWrapper);
+            // 绑定成功
+            return true;
+        }
+        // 无需绑定
+        return false;
+    }
+
+    public String oauthInvoke(HttpServletRequest request) throws Exception {
         // 获取code
         String code = request.getParameter("code");
         String state = request.getParameter("state");
@@ -253,7 +303,7 @@ public class PassportManager {
         //为新用户设置uuid
         wxUserInfo.setUuid(uuid);
         wxUserInfo.setUsername(userInfoJsonObject.getString("openid"));
-        wxUserInfo.setPassword("hojTest123456");
+        wxUserInfo.setPassword("hqu123456");
         wxUserInfo.setNickname(userInfoJsonObject.getString("nickname"));
         String sex = userInfoJsonObject.getString("sex");
         wxUserInfo.setGender("0".equals(sex) ? "secrecy" : "1".equals(sex) ? "male" : "female");
@@ -276,6 +326,7 @@ public class PassportManager {
         } else {
             throw new StatusFailException("注册失败，请稍后重新尝试！");
         }
+        return "注册登录成功！";
     }
 
     public UserInfoVO wxLogin(WxLoginDTO wxLoginDTO, HttpServletResponse response, HttpServletRequest request) throws StatusFailException {
@@ -287,7 +338,7 @@ public class PassportManager {
         if(StringUtils.isEmpty(openId)){
             return null;
         }else{
-            redisUtils.del(wxLoginDTO.getSceneStr());
+//            redisUtils.del(wxLoginDTO.getSceneStr());
         }
         String key = Constants.Account.TRY_LOGIN_NUM.getCode() + openId + "_" + userIpAddr;
         // 获取登录次数
@@ -331,6 +382,23 @@ public class PassportManager {
                 .stream()
                 .map(Role::getRole)
                 .collect(Collectors.toList()));
+        redisUtils.del(wxLoginDTO.getSceneStr());
+        return userInfoVo;
+    }
+
+    public UserInfoVO checkWxBind(WxBindDTO wxBindDTO) throws StatusFailException {
+        String uid = wxBindDTO.getSceneStr().replace("bind_","");
+        UserRolesVO userRolesVo = userRoleEntityService.getUserRoles(uid, null, null);
+        if(userRolesVo == null){
+            throw new StatusFailException("绑定失败！");
+        }
+        UserInfoVO userInfoVo = new UserInfoVO();
+        BeanUtil.copyProperties(userRolesVo, userInfoVo, "roles");
+        userInfoVo.setRoleList(userRolesVo.getRoles()
+                .stream()
+                .map(Role::getRole)
+                .collect(Collectors.toList()));
+        log.info("userInfo为：" + userInfoVo.toString());
         return userInfoVo;
     }
 

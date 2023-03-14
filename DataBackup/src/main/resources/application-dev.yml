@@ -115,7 +115,7 @@ logging:
         nacos:
           client:
             naming: info
-    root: info
+    root: debug
   file:
     path: ./hoj_backend
 

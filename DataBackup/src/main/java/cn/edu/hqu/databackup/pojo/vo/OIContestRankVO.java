@@ -49,6 +49,18 @@ public class OIContestRankVO {
     @ApiModelProperty(value = "学校")
     private String school;
 
+    @ApiModelProperty(value = "年级")
+    private String grade;
+
+    @ApiModelProperty(value = "专业")
+    private String course;
+
+    @ApiModelProperty(value = "学号")
+    private String number;
+
+    @ApiModelProperty(value = "手机号")
+    private String phoneNumber;
+
     @ApiModelProperty(value = "提交总得分")
     private Integer totalScore;
 

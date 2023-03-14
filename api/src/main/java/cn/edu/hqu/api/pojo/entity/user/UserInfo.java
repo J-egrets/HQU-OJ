@@ -102,4 +102,10 @@ public class UserInfo implements Serializable {
     @ApiModelProperty(value = "openId")
     private String openId;
 
+    @ApiModelProperty(value = "年级")
+    private String grade;
+
+    @ApiModelProperty(value = "手机号")
+    private String phoneNumber;
+
 }

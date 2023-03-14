@@ -46,7 +46,6 @@ public class HomeManager {
     private AnnouncementEntityService announcementEntityService;
 
     @Autowired
-
     private UserRecordEntityService userRecordEntityService;
 
     @Autowired

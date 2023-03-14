@@ -2,16 +2,14 @@ package cn.edu.hqu.databackup.controller.oj;
 
 import cn.edu.hqu.databackup.annotation.AnonApi;
 import cn.edu.hqu.databackup.common.result.CommonResult;
+import cn.edu.hqu.databackup.pojo.dto.WxBindDTO;
 import cn.edu.hqu.databackup.pojo.dto.WxLoginDTO;
 import cn.edu.hqu.databackup.pojo.vo.UserInfoVO;
 import cn.edu.hqu.databackup.service.oj.PassportService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,8 +30,8 @@ public class WXController {
      */
     @GetMapping("/api/getQrCode")
     @AnonApi
-    public CommonResult<JSONObject> getQrCode(){
-        return passportService.getQrCode();
+    public CommonResult<JSONObject> getQrCode(@RequestParam("bind") Boolean bind){
+        return passportService.getQrCode(bind);
     }
 
     /**
@@ -50,8 +48,8 @@ public class WXController {
 
     @RequestMapping("/api/invoke")
     @AnonApi
-    public void oauthInvoke(HttpServletRequest request){
-        passportService.oauthInvoke(request);
+    public String oauthInvoke(HttpServletRequest request){
+        return passportService.oauthInvoke(request);
     }
 
     /**
@@ -63,6 +61,16 @@ public class WXController {
     @AnonApi
     public CommonResult<UserInfoVO> wxLogin(@Validated @RequestBody WxLoginDTO wxLoginDTO, HttpServletResponse response, HttpServletRequest request){
         return passportService.wxLogin(wxLoginDTO,response,request);
+    }
+
+    /**
+     * 检测微信绑定
+     * @param wxBindDTO
+     * @return
+     */
+    @RequestMapping("/api/checkWxBind")
+    public CommonResult<UserInfoVO> checkWxBind(@Validated @RequestBody WxBindDTO wxBindDTO){
+        return passportService.checkWxBind(wxBindDTO);
     }
 
     /**

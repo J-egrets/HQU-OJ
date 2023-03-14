@@ -27,9 +27,9 @@ public class PassportServiceImpl implements PassportService {
     private PassportManager passportManager;
 
     @Override
-    public CommonResult<JSONObject> getQrCode() {
+    public CommonResult<JSONObject> getQrCode(Boolean bind) {
         try {
-            return CommonResult.successResponse(passportManager.getQrCode());
+            return CommonResult.successResponse(passportManager.getQrCode(bind));
         } catch (Exception e) {
             return CommonResult.errorResponse(e.getMessage());
         }
@@ -45,11 +45,11 @@ public class PassportServiceImpl implements PassportService {
     }
 
     @Override
-    public void oauthInvoke(HttpServletRequest request) {
+    public String oauthInvoke(HttpServletRequest request) {
         try {
-            passportManager.oauthInvoke(request);
+            return passportManager.oauthInvoke(request);
         } catch (Exception e) {
-            e.printStackTrace();
+            return "注册失败！请联系管理员排查原因！";
         }
     }
 
@@ -57,12 +57,21 @@ public class PassportServiceImpl implements PassportService {
     public CommonResult<UserInfoVO> wxLogin(WxLoginDTO wxLoginDTO, HttpServletResponse response, HttpServletRequest request) {
         try {
             UserInfoVO userInfoVO = passportManager.wxLogin(wxLoginDTO, response, request);
-            if(userInfoVO != null){
+            if (userInfoVO != null) {
                 return CommonResult.successResponse(userInfoVO);
-            }else{
-                return CommonResult.errorResponse("登录中");
+            } else {
+                return CommonResult.errorResponse("登录中", 202);
             }
         } catch (Exception e) {
+            return CommonResult.errorResponse(e.getMessage());
+        }
+    }
+
+    @Override
+    public CommonResult<UserInfoVO> checkWxBind(WxBindDTO wxLoginDTO) {
+        try {
+            return CommonResult.successResponse(passportManager.checkWxBind(wxLoginDTO));
+        } catch (StatusFailException e) {
             return CommonResult.errorResponse(e.getMessage());
         }
     }

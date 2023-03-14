@@ -46,36 +46,48 @@ public class FileEntityEntityServiceImpl extends ServiceImpl<FileMapper, File> i
         List<List<String>> headList = new LinkedList<>();
 
         List<String> head0 = new LinkedList<>();
-        head0.add("Rank");
+        head0.add("排名");
 
         List<String> head1 = new LinkedList<>();
-        head1.add("Username");
+        head1.add("用户名");
         List<String> head2 = new LinkedList<>();
-        head2.add("ShowName");
+        head2.add("展示名字");
         List<String> head3 = new LinkedList<>();
-        head3.add("Real Name");
+        head3.add("真实名字");
         List<String> head4 = new LinkedList<>();
-        head4.add("School");
+        head4.add("学校");
+        List<String> head5 = new LinkedList<>();
+        head5.add("年级");
+        List<String> head6 = new LinkedList<>();
+        head6.add("专业");
+        List<String> head7 = new LinkedList<>();
+        head7.add("学号");
+        List<String> head8 = new LinkedList<>();
+        head8.add("手机号");
 
         headList.add(head0);
         headList.add(head1);
         headList.add(head2);
         headList.add(head3);
         headList.add(head4);
+        headList.add(head5);
+        headList.add(head6);
+        headList.add(head7);
+        headList.add(head8);
 
-        List<String> head5 = new LinkedList<>();
+        List<String> head9 = new LinkedList<>();
         if (isACM) {
-            head5.add("AC");
-            List<String> head6 = new LinkedList<>();
-            head6.add("Total Submission");
-            List<String> head7 = new LinkedList<>();
-            head7.add("Total Penalty Time");
-            headList.add(head5);
-            headList.add(head6);
-            headList.add(head7);
+            head9.add("AC");
+            List<String> head10 = new LinkedList<>();
+            head10.add("总提交数");
+            List<String> head11 = new LinkedList<>();
+            head11.add("总罚时数");
+            headList.add(head9);
+            headList.add(head10);
+            headList.add(head11);
         } else {
-            head5.add("Total Score");
-            headList.add(head5);
+            head9.add("总分");
+            headList.add(head9);
         }
 
         // 添加题目头
@@ -107,6 +119,10 @@ public class FileEntityEntityServiceImpl extends ServiceImpl<FileMapper, File> i
             }
             rowData.add(acmContestRankVo.getRealname());
             rowData.add(acmContestRankVo.getSchool());
+            rowData.add(acmContestRankVo.getGrade());
+            rowData.add(acmContestRankVo.getCourse());
+            rowData.add(acmContestRankVo.getNumber());
+            rowData.add(acmContestRankVo.getPhoneNumber());
             rowData.add(acmContestRankVo.getAc());
             rowData.add(acmContestRankVo.getTotal());
             rowData.add(acmContestRankVo.getTotalTime());
@@ -163,6 +179,10 @@ public class FileEntityEntityServiceImpl extends ServiceImpl<FileMapper, File> i
             }
             rowData.add(oiContestRankVo.getRealname());
             rowData.add(oiContestRankVo.getSchool());
+            rowData.add(oiContestRankVo.getGrade());
+            rowData.add(oiContestRankVo.getCourse());
+            rowData.add(oiContestRankVo.getNumber());
+            rowData.add(oiContestRankVo.getPhoneNumber());
             rowData.add(oiContestRankVo.getTotalScore());
             HashMap<String, Integer> submissionInfo = oiContestRankVo.getSubmissionInfo();
             for (String displayID : contestProblemDisplayIDList) {
@@ -177,6 +197,5 @@ public class FileEntityEntityServiceImpl extends ServiceImpl<FileMapper, File> i
         }
         return allRowDataList;
     }
-
 
 }

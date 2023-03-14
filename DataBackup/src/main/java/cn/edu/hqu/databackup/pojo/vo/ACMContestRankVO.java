@@ -58,6 +58,18 @@ public class ACMContestRankVO {
     @ApiModelProperty(value = "ac题目数")
     private Integer ac;
 
+    @ApiModelProperty(value = "年级")
+    private String grade;
+
+    @ApiModelProperty(value = "专业")
+    private String course;
+
+    @ApiModelProperty(value = "学号")
+    private String number;
+
+    @ApiModelProperty(value = "手机号")
+    private String phoneNumber;
+
     @ApiModelProperty(value = "有提交的题的提交详情")
     private HashMap<String,HashMap<String,Object>> submissionInfo;
 }

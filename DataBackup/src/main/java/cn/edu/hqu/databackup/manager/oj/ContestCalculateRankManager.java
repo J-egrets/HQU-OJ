@@ -1,5 +1,6 @@
 package cn.edu.hqu.databackup.manager.oj;
 
+import cn.edu.hqu.api.pojo.entity.user.UserInfo;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
@@ -243,13 +244,16 @@ public class ContestCalculateRankManager {
 
         for (ContestRecordVO contestRecord : contestRecordList) {
 
-            if (superAdminUidList.contains(contestRecord.getUid())) { // 超级管理员的提交不入排行榜
+            // 超级管理员的提交不入排行榜
+            if (superAdminUidList.contains(contestRecord.getUid())) {
                 continue;
             }
 
             ACMContestRankVO ACMContestRankVo;
-            if (!uidMapIndex.containsKey(contestRecord.getUid())) { // 如果该用户信息没还记录
+            // 如果该用户信息没还记录
+            if (!uidMapIndex.containsKey(contestRecord.getUid())) {
 
+                UserInfo userInfo = userInfoEntityService.getUserInfo(contestRecord.getUid());
                 // 初始化参数
                 ACMContestRankVo = new ACMContestRankVO();
                 ACMContestRankVo.setRealname(contestRecord.getRealname())
@@ -261,7 +265,11 @@ public class ContestCalculateRankManager {
                         .setNickname(contestRecord.getNickname())
                         .setAc(0)
                         .setTotalTime(0L)
-                        .setTotal(0);
+                        .setTotal(0)
+                        .setGrade(userInfo.getGrade())
+                        .setCourse(userInfo.getCourse())
+                        .setNumber(userInfo.getNumber())
+                        .setPhoneNumber(userInfo.getPhoneNumber());
 
                 HashMap<String, HashMap<String, Object>> submissionInfo = new HashMap<>();
                 ACMContestRankVo.setSubmissionInfo(submissionInfo);
@@ -520,7 +528,9 @@ public class ContestCalculateRankManager {
             }
 
             OIContestRankVO oiContestRankVo;
-            if (!uidMapIndex.containsKey(contestRecord.getUid())) { // 如果该用户信息没还记录
+            // 如果该用户信息没还记录
+            if (!uidMapIndex.containsKey(contestRecord.getUid())) {
+                UserInfo userInfo = userInfoEntityService.getUserInfo(contestRecord.getUid());
                 // 初始化参数
                 oiContestRankVo = new OIContestRankVO();
                 oiContestRankVo.setRealname(contestRecord.getRealname())
@@ -530,7 +540,11 @@ public class ContestCalculateRankManager {
                         .setAvatar(contestRecord.getAvatar())
                         .setGender(contestRecord.getGender())
                         .setNickname(contestRecord.getNickname())
-                        .setTotalScore(0);
+                        .setTotalScore(0)
+                        .setGrade(userInfo.getGrade())
+                        .setCourse(userInfo.getCourse())
+                        .setNumber(userInfo.getNumber())
+                        .setPhoneNumber(userInfo.getPhoneNumber());
 
 
                 HashMap<String, Integer> submissionInfo = new HashMap<>();
@@ -587,14 +601,21 @@ public class ContestCalculateRankManager {
     }
 
 
+    /**
+     * 获取比赛的超级管理员列表，包括大系统的超级管理员和团队超级管理员
+     * @param gid
+     * @return
+     */
     public List<String> getSuperAdminUidList(Long gid) {
 
+        // 大系统的超级管理员
         List<String> superAdminUidList = userInfoEntityService.getSuperAdminUidList();
 
         if (gid != null) {
             QueryWrapper<GroupMember> groupMemberQueryWrapper = new QueryWrapper<>();
             groupMemberQueryWrapper.eq("gid", gid).eq("auth", 5);
 
+            // 获取拥有团队超级管理员权限的人
             List<GroupMember> groupRootList = groupMemberEntityService.list(groupMemberQueryWrapper);
 
             for (GroupMember groupMember : groupRootList) {
@@ -604,6 +625,13 @@ public class ContestCalculateRankManager {
         return superAdminUidList;
     }
 
+    /**
+     * 是否在封榜时间内
+     * @param minSealRankTime
+     * @param maxSealRankTime
+     * @param time
+     * @return
+     */
     private boolean isInSealTimeSubmission(Long minSealRankTime, Long maxSealRankTime, Long time) {
         return time >= minSealRankTime && time <= maxSealRankTime;
     }

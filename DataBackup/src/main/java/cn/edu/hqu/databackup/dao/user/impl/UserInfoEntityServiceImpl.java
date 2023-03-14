@@ -1,5 +1,7 @@
 package cn.edu.hqu.databackup.dao.user.impl;
 
+import cn.edu.hqu.api.pojo.entity.contest.ContestRecord;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import cn.edu.hqu.databackup.pojo.dto.RegisterDTO;
 import cn.edu.hqu.api.pojo.entity.user.UserInfo;
@@ -53,6 +55,11 @@ public class UserInfoEntityServiceImpl extends ServiceImpl<UserInfoMapper, UserI
     @Override
     public List<String> getProblemAdminUidList() {
         return userInfoMapper.getProblemAdminUidList();
+    }
+
+    @Override
+    public UserInfo getUserInfo(String uid) {
+        return userInfoMapper.getUserInfo(uid);
     }
 
 }

@@ -17,13 +17,15 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface PassportService {
 
-    CommonResult<JSONObject> getQrCode();
+    CommonResult<JSONObject> getQrCode(Boolean bind);
 
     String checkSign (HttpServletRequest request);
 
-    void oauthInvoke(HttpServletRequest request);
+    String oauthInvoke(HttpServletRequest request);
 
-    CommonResult<UserInfoVO> wxLogin(@Validated @RequestBody WxLoginDTO wxLoginDTO, HttpServletResponse response, HttpServletRequest request);
+    CommonResult<UserInfoVO> wxLogin(WxLoginDTO wxLoginDTO, HttpServletResponse response, HttpServletRequest request);
+
+    CommonResult<UserInfoVO> checkWxBind(WxBindDTO wxLoginDTO);
 
     CommonResult<UserInfoVO> login(LoginDTO loginDto, HttpServletResponse response, HttpServletRequest request);
 
